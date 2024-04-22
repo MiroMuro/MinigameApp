@@ -19,7 +19,7 @@ def create_minesweeper_grid(event=None):
     create_minesweeper_bombs(canvas)
 
 def create_minesweeper_bombs(canvas):
-    cellamount = 10
+    cellamount = 20
     coordinates=[]
     r_ids = []
     #Create 10 random coordinates
@@ -27,7 +27,10 @@ def create_minesweeper_bombs(canvas):
         x = random.randrange(0,600,60)
         y = random.randrange(0,600,60)
         coord = (x,y)
-        coordinates.append(coord)
+        if coord in coordinates:
+            cellamount += 1
+        else:
+            coordinates.append(coord)
     #Draw the bomb rectangles
     for coord in coordinates:
         x = coord[0]
@@ -42,6 +45,7 @@ def create_minesweeper_bombs(canvas):
         #print(canvas.itemcget(xd,"fill"))
     create_minesweeper_numbers(bomb_coords)
     return
+
 def create_minesweeper_numbers(bomb_coordinates):
     cell_width = canvas.winfo_width() / 10
     cell_height = canvas.winfo_height()/ 10
@@ -58,8 +62,7 @@ def create_minesweeper_numbers(bomb_coordinates):
                 bomb_amount = check_nearby_bombs(canvas.coords(r_id),bomb_coordinates)
                 canvas.create_text(x*cell_width+30,y*cell_height+30,text=f"{bomb_amount}",font=("Helvetica", 16))
             
-def check_nearby_bombs(coords, bomb_coords):
-    
+def check_nearby_bombs(coords, bomb_coords):  
     x,y,x2,y2 = coords
     bomb_amount = 0
     if x == 0 and y == 0:
@@ -108,7 +111,7 @@ def check_nearby_bombs(coords, bomb_coords):
             if bomb in nearby_tiles:
                 bomb_amount += 1
                 print("BOMB Here t-right")
-                
+
     elif x == 540 and y == 540:
         print("BOTTOM RIGHT")
         nearby_tiles = [
@@ -123,6 +126,103 @@ def check_nearby_bombs(coords, bomb_coords):
             if bomb in nearby_tiles:
                 bomb_amount += 1
                 print("BOMB Here b-right")
+    #left side
+    elif x == 0 and y!= 0 and y!=540:
+        nearby_tiles = [
+            #above
+            [x,y-60,x2,y2-60],
+            #above right
+            [x+60,y-60,x2+60,y2-60],
+            #right
+            [x+60,y,x2+60,y2],
+            #bottom right
+            [x+60,y+60,x2+60,y2+60],
+            #below
+            [x, y+60,x2,y2+60]
+        ]
+        for bomb in bomb_coords:
+            if bomb in nearby_tiles:
+                bomb_amount += 1
+                print("BOMB Here left-side")
+    #right side
+    elif x == 540 and y!= 0 and y!=540:
+        nearby_tiles = [
+            #above
+            [x,y-60,x2,y2-60],
+            #above left
+            [x-60,y-60,x2-60,y2-60],
+            #left
+            [x-60,y,x2-60,y2],
+            #bottom left
+            [x-60,y+60,x2-60,y2+60],
+            #below
+            [x,y+60,x2,y2+60]
+        ]       
+        for bomb in bomb_coords:
+            if bomb in nearby_tiles:
+                bomb_amount += 1
+                print("BOMB Here right-side")
+    #top side
+    elif y == 0 and x!=0 and x!=540:
+        nearby_tiles = [
+            #left
+            [x-60,y,x2-60,y2],
+            #bottom left
+            [x-60,y+60,x2-60,y2+60],
+            #below
+            [x,y+60,x2,y2+60],
+            #bottom right
+            [x+60,y+60,x2+60,y2+60],
+            #right
+            [x+60,y,x2+60,y2]
+        ]
+        for bomb in bomb_coords:
+            if bomb in nearby_tiles:
+                bomb_amount += 1
+                print("BOMB Here top-side")
+    #bottom side
+    elif y == 540 and x!=0 and x!=540:
+        nearby_tiles = [
+            #left
+            [x-60,y,x2-60,y2],
+            #top left
+            [x-60,y-60,x2-60,y2-60],
+            #above
+            [x,y-60,x2,y2-60],
+            #above right
+            [x+60,y-60,x2+60,y2-60],
+            #right
+            [x+60,y,x2+60,y2]
+        ]
+        for bomb in bomb_coords:
+            if bomb in nearby_tiles:
+                bomb_amount += 1
+    
+                print("BOMB Here bottom-side")
+    #Rest of the tiles
+    else:
+        nearby_tiles = [
+            #above
+            [x,y-60,x2,y2-60],
+            #above right
+            [x+60,y-60,x2+60,y2-60],
+            #right
+            [x+60,y,x2+60,y2],
+            #bottom right
+            [x+60,y+60,x2+60,y2+60],
+            #below
+            [x,y+60,x2,y+60],
+            #bottom left
+            [x-60,y+60,x2-60,y2+60],
+            #left
+            [x-60,y,x2-60,y2],
+            #above left
+            [x-60,y-60,x2-60,y2-60]
+        ]
+        for bomb in bomb_coords:
+            if bomb in nearby_tiles:
+                bomb_amount += 1
+        
     return bomb_amount
 
 def create_bomb_locations(cellamount):
