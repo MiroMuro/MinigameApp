@@ -44,6 +44,7 @@ def create_minesweeper_bombs(canvas):
         #print(canvas.coords(xd))
         #print(canvas.itemcget(xd,"fill"))
     create_minesweeper_numbers(bomb_coords)
+    create_buttons(cellamount)
     return
 
 def create_minesweeper_numbers(bomb_coordinates):
@@ -225,11 +226,19 @@ def check_nearby_bombs(coords, bomb_coords):
         
     return bomb_amount
 
-def create_bomb_locations(cellamount):
-    #Cell amount = 100
+def create_buttons(cellamount):
+    #pixel = hotoImage(width=30, height=30)
+    
+    for x in range(10):
+        for y in range(10):
+            btn = Button(top,command=lambda: destroy_button(self))
+            btn.place(x=2+(60*x),y=23+(60*y),width=60,height=60)
+    
+def destroy_button():
 
     return
 def open():
+    global top
     top =Toplevel()
     top.title("Minesweeper")
     top.geometry("700x700")
