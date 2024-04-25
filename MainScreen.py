@@ -1,6 +1,7 @@
 from tkinter import *
 from PIL import ImageTk, Image
 import random
+from tkinter import messagebox
 root = Tk()
 root.title("Main Screen")
 root.iconbitmap("e:/taustakuva_d2n_icon.ico")
@@ -44,16 +45,19 @@ def create_minesweeper_bombs(canvas):
         #print(canvas.coords(xd))
         #print(canvas.itemcget(xd,"fill"))
     create_minesweeper_numbers(bomb_coords)
-    create_buttons(cellamount)
+    
     return
 
 def create_minesweeper_numbers(bomb_coordinates):
+    
+
     cell_width = canvas.winfo_width() / 10
     cell_height = canvas.winfo_height()/ 10
    # print(bomb_coordinates)
     for x in range(10):
         for y in range(10):
             number_coord = [x*cell_width,y*cell_height,x*cell_width+cell_width,y*cell_height+cell_height]
+            
             for bomb in bomb_coordinates:
                 if bomb == number_coord:
                     canvas.create_text(x*cell_width+30,y*cell_height+30,text="B",font=("Helvetica", 16))
@@ -62,7 +66,7 @@ def create_minesweeper_numbers(bomb_coordinates):
                 r_id = canvas.create_rectangle(x*cell_width,y*cell_height,x*cell_width+cell_width,y*cell_height+cell_height,fill="green")
                 bomb_amount = check_nearby_bombs(canvas.coords(r_id),bomb_coordinates)
                 canvas.create_text(x*cell_width+30,y*cell_height+30,text=f"{bomb_amount}",font=("Helvetica", 16))
-            
+    create_buttons(100)
 def check_nearby_bombs(coords, bomb_coords):  
     x,y,x2,y2 = coords
     bomb_amount = 0
@@ -227,30 +231,42 @@ def check_nearby_bombs(coords, bomb_coords):
     return bomb_amount
 
 def create_buttons(cellamount):
-    #pixel = hotoImage(width=30, height=30)
-    
+
     for x in range(10):
         for y in range(10):
-            btn = Button(top,command=lambda: destroy_button(self))
+            btn = Button(top,command=get_pos)
             btn.place(x=2+(60*x),y=23+(60*y),width=60,height=60)
+    return
+            
     
 def destroy_button():
 
     return
+def get_pos():
+    x =root.winfocanvas.winfo_pointerx()
+    y =canvas.winfo_pointery()
+    print("LOL",x-114,y-158)
+    return
 def open():
-    global top
-    top =Toplevel()
-    top.title("Minesweeper")
-    top.geometry("700x700")
-    global canvas
-    topLabel = Label(top, text="Minesweeper")
-    topLabel.grid(row=0,column=0,columnspan=3)
-    #The borders add 3 pixels to all sides somehow. So the canvas is 594x594
-    canvas = Canvas(top, width=594, height=594,borderwidth=1,relief="solid")
-    canvas.grid(row=1,column=1)
-    #Bind the canvas to the create_minesweeper_grid function
-    canvas.bind("<Configure>", create_minesweeper_grid)
-    #canvas.bind("<Configure>", create_minesweeper_bombs)
+    response = messagebox.askyesno("Open Minesweeper", "Close your eyes for one second, so minesweeper has time to load the tiles!")
+    if response:
+        global top
+        top =Toplevel()
+        top.title("Minesweeper")
+        top.geometry("700x700")
+        global canvas
+        topLabel = Label(top, text="Minesweeper")
+        topLabel.grid(row=0,column=0,columnspan=3)
+        #The borders add 3 pixels to all sides somehow. So the canvas is 594x594
+        canvas = Canvas(top, width=594, height=594,borderwidth=1,relief="solid")
+        canvas.grid(row=1,column=1)
+        #Bind the canvas to the create_minesweeper_grid function
+        canvas.bind("<Configure>", create_minesweeper_grid)
+        canvas.bind("<Button-1>",get_pos)
+        #canvas.bind("<Configure>", create_minesweeper_bombs)
+    else:
+        return
+    
 
 
 
